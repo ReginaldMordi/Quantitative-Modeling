@@ -1,0 +1,78 @@
+---
+title: "Assignment Module 4"
+author: "Reginald Mordi"
+date: "10/2/2020"
+output: html_document
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+dir.create("images")
+```
+
+#This notebook contains the code for question number 3 in the assignment 2. Specifically, the formulation for the Weigelt Corporation example
+
+* Note that lines that start with # are comments. 
+
+```{r,eval=FALSE}
+#install.packages("lpSolveAPI")
+library(lpSolveAPI)
+```
+***
+Let us set up the Weigelt Corporation problem. Note that we had nine decision variables, and nine constraints.
+In the first formulation, we will directly create the objective function and constraints
+```{r}
+# make an lp object with 0 constraints and 9 decision variables
+lp <- make.lp(0, 9)
+
+# Now create the objective function. 
+set.objfn(lp, c(420, 360, 300, 420, 360, 300, 420, 360, 300))
+
+# It is a maximization problem
+lp.control(lp,sense='max')
+
+# Add the nine  constraints
+# 3 constrains for Production Capacity of the three plants
+add.constraint(lp, c(1, 1, 1, 0, 0, 0, 0, 0, 0), "<=", 750)
+add.constraint(lp, c(0, 0, 0, 1, 1, 1, 0, 0, 0), "<=", 900)
+add.constraint(lp, c(0, 0, 0, 0, 0, 0, 1, 1, 1), "<=", 450)
+
+# 3 constrains for the in-process storage space available for a day's production of the three plants
+add.constraint(lp, c(20, 15, 12, 0, 0, 0, 0, 0, 0), "<=", 13000)
+add.constraint(lp, c(0, 0, 0, 20, 15, 12, 0, 0, 0), "<=", 12000)
+add.constraint(lp, c(0, 0, 0, 0, 0, 0, 20, 15, 12), "<=", 5000)
+
+# 3 constrains for the Sales Forecasting 
+add.constraint(lp, c(0, 0, 1, 0, 0, 1, 0, 0, 1), "<=", 900)
+add.constraint(lp, c(0, 1, 0, 0, 1, 0, 0, 1, 0), "<=", 1200)
+add.constraint(lp, c(1, 0, 0, 1, 0, 0, 1, 0, 0), "<=", 750)
+
+add.constraint(lp, c(900, 900, 900, -750, -750, -750, 0, 0, 0), "=", 0)
+add.constraint(lp, c(450, 450, 450, 0, 0, 0, -750, -750, -750), "=", 0)
+
+# To identify the variables and constraints, we can
+# set variable names and names of the constraints
+
+ColNames <- c("P11", "P12", "P13", "P21", "P22", "P23", "P31", "P32", "P33")
+RowNames <- c("Capacity-P1", "Capacity-P2", "Capacity-P3", "Storage-P1", "Storage-P2", "Storage-P3", "Sales-P1", "Sales-P2", "Sales-P3","c1","c2")
+dimnames(lp) <- list(RowNames, ColNames)
+
+# Now, print out the model
+lp
+
+# The model can also be saved to a file
+write.lp(lp, filename = "rmordi_4.lp", type = "lp")
+```
+We now solve the above LP problem
+
+```{r}
+solve(lp)
+get.objective(lp)
+get.variables(lp)
+get.constraints(lp)
+```
+***
+# We can see from the above analysis that the maximum Profit that Weigelt Company can achieve according to our constraints is $ 696000.
+
+# It seems that to maximize the profit we do not need large products from plant 1, and no small products form plnat # 2, and no small and medium produts from plant3.
+
