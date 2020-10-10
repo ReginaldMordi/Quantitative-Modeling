@@ -1,0 +1,47 @@
+---
+Name: Regie Mordi
+Course: QMM Fall 2020
+Date: 10/10/2020
+title: "Heart Solution"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+dir.create("images")
+```
+
+***
+Heart produces (AEDs) in two different plants (A and B)
+
+Module formulation for the productin and shipping data of Heart Co. is given below, and read through the LP file.
+
+A transportation problem will have feasible solutions if and only if total supply = total demand
+In this problem the monthly supply is 220, while the monthly demand is 210, 
+So, we will create a dummy destination (dummy warehouse 4) equal to 10 
+The Total cost for each unit is (production cost + shipping cost), In addition, we require that the values of the variables be binary 0 (not assigned) of 1 (assigned). Note the use of the big "M" method for costs. The complete formulation is below
+```
+/* Objective function */
+min: 622 A1 + 614 A2 + 630 A3 + 641 B1 + 645 B2 + 649 B3;
+
+/* Constraints */
+A1 + A2 + A3 + A4 = 100;
+B1 + B2 + B3 + B4 = 120;
+A1 + B1 = 80;
+A2 + B2 = 60;
+A3 + B3 = 70;
+A4 + B4 = 10;
+```
+```{r}
+library(lpSolveAPI)
+x <- read.lp("Heart.lp")
+x
+```
+
+```{r}
+solve(x)
+get.objective(x)
+get.variables(x)
+```
+***
+*** From the above solution we can notice that the solve is 0, which means that there is no errors with problem formulation***
+*** The minimum Total cost for producing and shipping the units from Plants to Warehouses is $132790.***
+*** To achieve the minimum cost the plant A should not produce and ship any unit to warehouse 1 also plant 2 should not produce and ship any unit to plant 2, while we still have dummy units produced from plant 2 to warehouse 4.***
