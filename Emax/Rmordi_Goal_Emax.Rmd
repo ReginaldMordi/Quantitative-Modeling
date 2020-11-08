@@ -1,0 +1,54 @@
+---
+title: "Assignment Goal Programming"
+author: "Reginald Mordi"
+date: "11/4/2020"
+Problem: Emax Corporation
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+***
+# Emax Corporation 
+
+```{r}
+library(lpSolveAPI)
+Emax <- read.lp("Emax.lp")
+Emax
+``` 
+## Solve
+```{r}
+solve(Emax)
+get.objective(Emax)
+get.variables(Emax)
+```
+
+### Remarks
+
+Applying the simplex method we can imply that
+producing 15 units of production 3 yields the optimal solution of $225 million in profit, but this cased an increase in the levels of employment by 2500 from the current year 5000.
+
+the company is concerned also about the goal of emplyment levels
+
+so we try to achieve this goal also
+
+#Emax co. - Streamlined Approach
+***
+```{r}
+library(lpSolveAPI)
+Stream_Emax <- read.lp("Goal_Emax_streamline.lp")
+Stream_Emax
+``` 
+
+## Solve
+```{r}
+solve(Stream_Emax)
+get.objective(Stream_Emax)
+get.variables(Stream_Emax)
+```
+Here we can notice that the optimal solution is $208.333 million
+This solution asure that all goals are met, and the optimal solution falls short of the first-priority goals with respect to long-run profit.
+
+# so the management of the Emax will suggest to produce a mix of the second production by approximatly 8 units and 3 units of the third one
