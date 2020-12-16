@@ -1,0 +1,80 @@
+---
+title: "Final Exam"
+author: "Reginald Mordi"
+date: "December 1"
+output: word_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+dir.create("images")
+```
+
+***
+### we depend on 3 variables GPA, Work Experience, and GRE Score
+### There is a score for each student 
+### Scare can be calculated by multiplying the 3 values of variables 
+### then we form the lp file with those scorers
+
+The objective function is to maximize the scores of the students
+,while each student can be chosen only once.
+
+
+The mathematical model
+
+min X X c y þ X wP.zU — zLΣ þ wNðvU — vLÞ
+
+s:t: X xij ¼ 1	8j
+
+yjk—xij—xik	≤	—1	8j; k; i	(2)
+
+vi—	xij	¼	0  8i	(3)
+
+zli— X aljxij	¼	0 8i; l	(4)
+
+vL ≤ vi ≤ vU	8i	(5)
+
+zL ≤ zli ≤ zU	8i; l	(6)
+
+xij 2 f0; 1g	8i; j	(7)
+
+yjk 2 f0; 1g	8j; k	(8)
+
+zli ≤ 0	8i; l	(9)
+
+vi ≤ 0	8i	(10)
+
+zL; zU ≤ 0	8l	(11)
+
+vL; vU ≤ 0	(12)
+
+
+## Read the lp file>>>
+```{r}
+library(lpSolveAPI)
+x <- read.lp("Final.lp")
+x
+```
+
+
+```{r}
+solve(x)
+get.objective(x)
+get.variables(x)
+get.constraints(x)
+get.sensitivity.objex(x)
+```
+
+*** 
+The groups are:
+
+Group 1.	X11, x61, x91       Students number(1,6,9)
+
+Group 2.	X72, x112, x122     Students number(7,11,12)
+
+Group 3.	X33, x43, x103      Students number(3,4,10)
+
+Group 4.	X24, x54, x84       Students number(2,5,8)
+
+***
